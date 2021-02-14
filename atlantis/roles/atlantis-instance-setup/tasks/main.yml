@@ -1,0 +1,63 @@
+---
+- name: Get vpc security groups facts
+  ec2_group_facts:
+    profile: "{{ aws_profile}}"
+    region: "{{ aws_region }}"
+    filters:
+      "tag:Name": "{{ sg_name }}"
+  register: atlantis_sg_facts
+
+- name: Set vpc security group facts
+  set_fact:
+    group_id: "{{ atlantis_sg_facts.security_groups.0.group_id }}"
+- debug: var=group_id
+
+- name: Get vpc subnet facts
+  ec2_vpc_subnet_facts:
+    profile: "{{ aws_profile}}"
+    region: "{{ aws_region }}"
+    filters:
+      "tag:Name": "{{ subnet_name }}"
+  register: atlantis_subnet_facts
+
+- name: Set vpc subnet facts
+  set_fact:
+    vpc_subnet_id: "{{ atlantis_subnet_facts.subnets.0.subnet_id }}"
+- debug: var=vpc_subnet_id
+
+- name: Provision Atlantis instance
+  ec2:
+    key_name: "{{ sshkey }}"
+    vpc_subnet_id: "{{ vpc_subnet_id }}"
+    group_id: "{{ group_id }}"
+    instance_type: "{{ instance_type }}"
+    profile: "{{ aws_profile}}"
+    region: "{{ aws_region }}"
+    image: "{{ ami }}"
+    wait: true
+    count_tag:
+      app: atlantis
+    exact_count: 1
+    instance_tags:
+      app: atlantis
+      Name: atlantis_instance
+  register: atlantis_instance
+
+- name: Gather EC2 instance facts
+  ec2_instance_info:
+    profile: "{{ aws_profile }}"
+    region: "{{ aws_region }}"
+    filters:
+      "tag:app": "atlantis"
+      "instance-state-name": "running"
+  register: atlantis_existing_ec2_instances
+
+- name: Associate EIP to Atlantis instance
+  ec2_eip:
+    profile: "{{ aws_profile}}"
+    region: "{{ aws_region }}"
+    device_id: "{{ atlantis_existing_ec2_instances.instances.0.instance_id }}"
+    in_vpc: yes
+    state: present
+    public_ip: "{{ EIP }}"
+    allow_reassociation: yes

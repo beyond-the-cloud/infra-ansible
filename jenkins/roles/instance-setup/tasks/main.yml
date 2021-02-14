@@ -1,0 +1,63 @@
+---
+- name: Get vpc security groups facts
+  ec2_group_facts:
+    profile: "{{ aws_profile}}"
+    region: "{{ aws_region }}"
+    filters:
+      "tag:Name": "{{ sg_name }}"
+  register: jenkins_sg_facts
+
+- name: Set vpc security group facts
+  set_fact:
+    group_id: "{{ jenkins_sg_facts.security_groups.0.group_id }}"
+- debug: var=group_id
+
+- name: Get vpc subnet facts
+  ec2_vpc_subnet_facts:
+    profile: "{{ aws_profile}}"
+    region: "{{ aws_region }}"
+    filters:
+      "tag:Name": "{{ subnet_name }}"
+  register: jenkins_subnet_facts
+
+- name: Set vpc subnet facts
+  set_fact:
+    vpc_subnet_id: "{{ jenkins_subnet_facts.subnets.0.subnet_id }}"
+- debug: var=vpc_subnet_id
+
+- name: Provision Jenkins instance
+  ec2:
+    key_name: "{{ sshkey }}"
+    vpc_subnet_id: "{{ vpc_subnet_id }}"
+    group_id: "{{ group_id }}"
+    instance_type: "{{ instance_type }}"
+    profile: "{{ aws_profile}}"
+    region: "{{ aws_region }}"
+    image: "{{ ami }}"
+    wait: true
+    count_tag:
+      app: jenkins
+    exact_count: 1
+    instance_tags:
+      app: jenkins
+      Name: jenkins_instance
+  register: jenkins_instance
+
+- name: Gather EC2 instance facts
+  ec2_instance_info:
+    profile: "{{ aws_profile }}"
+    region: "{{ aws_region }}"
+    filters:
+      "tag:app": "jenkins"
+      "instance-state-name": "running"
+  register: jenkins_existing_ec2_instances
+
+- name: Associate EIP to Jenkins instance
+  ec2_eip:
+    profile: "{{ aws_profile}}"
+    region: "{{ aws_region }}"
+    device_id: "{{ jenkins_existing_ec2_instances.instances.0.instance_id }}"
+    in_vpc: yes
+    state: present
+    public_ip: "{{ EIP }}"
+    allow_reassociation: yes

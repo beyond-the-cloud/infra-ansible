@@ -1,0 +1,7 @@
+---
+- name: Gather information about all availability zones
+  aws_az_info:
+    region: "{{ aws_region }}"
+  register: az
+
+- debug: var=az.availability_zones

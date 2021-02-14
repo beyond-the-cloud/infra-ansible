@@ -1,0 +1,10 @@
+---
+- name: Copy config.yml
+  template:
+    src: "{{ config_file_path }}"
+    dest: /usr/local/share/atlantis-config.yml
+
+- name: Restart atlantis
+  systemd:
+    name: atlantis
+    state: restarted

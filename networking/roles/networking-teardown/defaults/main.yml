@@ -1,0 +1,4 @@
+---
+aws_region: us-east-1
+aws_profile: root
+vpc_name: "{{ service_name }}-{{ aws_region }}-vpc"

@@ -1,0 +1,8 @@
+---
+- name: "Terminate atlantis server"
+  hosts: tag_app_atlantis
+  remote_user: ubuntu
+  gather_facts: yes
+  become: true
+  roles:
+    - atlantis-service-terminate

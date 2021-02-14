@@ -1,0 +1,9 @@
+---
+- name: Stop Atlantis instance
+  ec2:
+    profile: "{{ aws_profile }}"
+    region: "{{ aws_region }}"
+    instance_tags:
+      app: atlantis
+    state: stopped
+    wait: true

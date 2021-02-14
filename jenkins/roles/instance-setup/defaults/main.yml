@@ -1,0 +1,8 @@
+---
+aws_region: us-east-1
+aws_profile: root
+vpc_name: "jenkins-{{ aws_region }}-vpc"
+sshkey: jenkins_sshkey
+instance_type: t2.micro
+sg_name: jenkins_sg
+subnet_name: "jenkins_{{ aws_region }}b"

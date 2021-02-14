@@ -1,0 +1,13 @@
+---
+- name: Replace default nginx config
+  template:
+    src: templates/default.j2
+    dest: /etc/nginx/sites-enabled/default
+
+- name: Reload nginx to activate letsencrypt site
+  service:
+    name: nginx
+    state: restarted
+
+- name: Create letsencrypt certificate
+  shell: certbot -n --nginx -m {{ letsencrypt_email }} --agree-tos -d {{ domain_name }}

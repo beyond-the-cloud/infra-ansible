@@ -1,0 +1,6 @@
+---
+- name: "Stop AWS jenkins instance"
+  hosts: localhost
+  gather_facts: yes
+  roles:
+  - instance-stop
