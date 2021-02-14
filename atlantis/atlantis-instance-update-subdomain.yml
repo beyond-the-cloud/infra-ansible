@@ -1,0 +1,6 @@
+---
+- name: "Update Atlantis Subdomain's EIP"
+  hosts: localhost
+  gather_facts: yes
+  roles:
+  - atlantis-instance-update-subdomain

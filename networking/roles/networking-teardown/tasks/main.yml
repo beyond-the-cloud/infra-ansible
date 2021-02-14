@@ -1,0 +1,73 @@
+---
+- name: include variables
+  include_vars:
+    file: "{{ service_name }}.yml"
+
+- name: vpc facts
+  ec2_vpc_net_facts:
+    profile: "{{ aws_profile}}"
+    region: "{{ aws_region }}"
+    filters:
+      "tag:Name": "{{ vpc_name }}"
+  register: vpc_facts
+
+- name: Set vpc facts
+  set_fact:
+    vpc_id: "{{ vpc_facts.vpcs.0.id }}"
+
+- name: Get route table info
+  ec2_vpc_route_table_facts:
+    profile: "{{ aws_profile}}"
+    region: "{{ aws_region }}"
+    filters:
+      "tag:Name": "{{ service_name }}_route_table_{{ vpc_id }}"
+  register: "service_rt"
+
+- name: Set route table facts
+  set_fact:
+    route_table_id: "{{ service_rt.route_tables.0.id }}"
+
+- name: Teardown vpc security groups
+  ec2_group:
+    state: absent
+    profile: "{{ aws_profile}}"
+    region: "{{ aws_region }}"
+    vpc_id: "{{ vpc_id }}"
+    name: "{{ service_name }}_sg_{{ vpc_id }}"
+  register: "service_sg_teardown"
+
+- name: Teardown subnets
+  ec2_vpc_subnet:
+    state: absent
+    profile: "{{ aws_profile }}"
+    region: "{{ aws_region }}"
+    vpc_id: "{{ vpc_id }}"
+    cidr: "{{ item.value.cidr }}"
+  with_dict: "{{ vpc_subnets }}"
+  register: "service_subnets_teardown"
+
+- name: Teardown Internet Gateway
+  ec2_vpc_igw:
+    state: absent
+    profile: "{{ aws_profile }}"
+    region: "{{ aws_region }}"
+    vpc_id: "{{ vpc_id }}"
+  register: "service_igw_teardown"
+
+- name: Teardown VPC for Jenkins
+  ec2_vpc_net:
+    state: absent
+    profile: "{{ aws_profile }}"
+    region: "{{ aws_region }}"
+    name: "{{ vpc_name }}"
+    cidr_block: "{{ vpc_cidr }}"
+  register: "service_vpc_teardown"
+
+- name: Teardown the route table in the vpc
+  ec2_vpc_route_table:
+    state: absent
+    profile: "{{ aws_profile}}"
+    region: "{{ aws_region }}"
+    vpc_id: "{{ vpc_facts.vpcs.0.id }}"
+    route_table_id: "{{ route_table_id }}"
+  register: "service_route_table_teardown"

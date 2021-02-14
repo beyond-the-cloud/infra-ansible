@@ -1,0 +1,6 @@
+---
+- name: "Teardown AWS Networking"
+  hosts: localhost
+  gather_facts: yes
+  roles:
+  - networking-teardown

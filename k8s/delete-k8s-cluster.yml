@@ -1,0 +1,8 @@
+---
+    - name: "Delete k8s cluster"
+      hosts: localhost
+      gather_facts: yes
+      roles:
+        - delete-k8s-cluster
+      environment:
+        AWS_PROFILE: kops

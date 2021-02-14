@@ -1,0 +1,6 @@
+---
+- name: "Setup AWS atlantis instance"
+  hosts: localhost
+  gather_facts: yes
+  roles:
+  - atlantis-instance-setup

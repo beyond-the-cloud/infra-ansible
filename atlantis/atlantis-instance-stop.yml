@@ -1,0 +1,6 @@
+---
+- name: "Stop AWS atlantis instance"
+  hosts: localhost
+  gather_facts: yes
+  roles:
+  - atlantis-instance-stop
