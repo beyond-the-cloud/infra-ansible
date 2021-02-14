@@ -1,5 +1,20 @@
 # infra-ansible
+
 Repository for Ansible Playbooks
+
+## Networking
+
+Variables:
+
+  - `service_name`: should be either `atlantis` or `jenkins`
+
+Examples:
+
+```
+ansible-playbook networking/networking-setup.yml --extra-vars '{"service_name": ""}' -vvv
+
+ansible-playbook networking/networking-terminate.yml --extra-vars '{"service_name": ""}' -vvv
+```
 
 ## Instructions for using packer
 
