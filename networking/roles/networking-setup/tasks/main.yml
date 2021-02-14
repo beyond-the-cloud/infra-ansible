@@ -1,4 +1,8 @@
 ---
+- name: include variables
+  include_vars:
+    file: "{{ service_name }}.yml"
+
 - name: Create VPC
   ec2_vpc_net:
     state: present
