@@ -1,5 +1,0 @@
----
-- name: Stop atlantis server
-  systemd:
-    name: atlantis
-    state: stopped

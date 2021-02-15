@@ -16,6 +16,28 @@ ansible-playbook networking/networking-setup.yml --extra-vars '{"service_name": 
 ansible-playbook networking/networking-terminate.yml --extra-vars '{"service_name": ""}' -vvv
 ```
 
+## Jenkins Instance
+Variables:
+
+  - `instance`: should be either `atlantis` or `jenkins`
+
+```bash
+ansible-playbook jenkins-instance/jenkins-instance-setup.yml --extra-vars '{"instance": "", "ami": "ami-0bc42be5271f1585a", "EIP": "Your_Elastic_IP"}' -vvv
+
+ansible-playbook jenkins-instance/jenkins-instance-stop.yml -vvv
+
+ansible-playbook jenkins-instance/jenkins-instance-terminate.yml --extra-vars '{"input_filters": {"tag:app": "jenkins", "instance-state-name": "running"}, "EIP": "Your_Elastic_IP"}' -vvv
+```
+
+## Certbot Certificate
+Variables:
+
+  - `instance`: should be either `atlantis` or `jenkins`
+
+```bash
+ansible-playbook atlantis-instance/atlantis-instance-certificate-setup.yml --extra-vars '{"instance": "", "domain_name": "xxxxx.xxxx.me", "letsencrypt_email": "xxxx@gmail.com"}' -vvv
+```
+
 ## Instructions for using packer
 
 - [packer docs](https://learn.hashicorp.com/collections/packer/getting-started)

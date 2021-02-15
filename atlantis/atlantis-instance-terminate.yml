@@ -1,6 +1,0 @@
----
-- name: "Terminate AWS atlantis instance"
-  hosts: localhost
-  gather_facts: yes
-  roles:
-  - atlantis-instance-terminate

@@ -1,6 +1,0 @@
----
-- name: "Terminate AWS jenkins instance"
-  hosts: localhost
-  gather_facts: yes
-  roles:
-  - instance-terminate

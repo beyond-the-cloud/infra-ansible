@@ -1,0 +1,63 @@
+---
+- name: Get vpc security groups facts
+  ec2_group_facts:
+    profile: "{{ aws_profile}}"
+    region: "{{ aws_region }}"
+    filters:
+      "tag:Name": "{{ instance }}_sg"
+  register: sg_facts
+
+- name: Set vpc security group facts
+  set_fact:
+    group_id: "{{ sg_facts.security_groups.0.group_id }}"
+- debug: var=group_id
+
+- name: Get vpc subnet facts
+  ec2_vpc_subnet_facts:
+    profile: "{{ aws_profile}}"
+    region: "{{ aws_region }}"
+    filters:
+      "tag:Name": "{{ subnet_name }}"
+  register: subnet_facts
+
+- name: Set vpc subnet facts
+  set_fact:
+    vpc_subnet_id: "{{ subnet_facts.subnets.0.subnet_id }}"
+- debug: var=vpc_subnet_id
+
+- name: Provision instance
+  ec2:
+    key_name: "{{ sshkey }}"
+    vpc_subnet_id: "{{ vpc_subnet_id }}"
+    group_id: "{{ group_id }}"
+    instance_type: "{{ instance_type }}"
+    profile: "{{ aws_profile}}"
+    region: "{{ aws_region }}"
+    image: "{{ ami }}"
+    wait: true
+    count_tag:
+      app: "{{ instance }}"
+    exact_count: 1
+    instance_tags:
+      app: "{{ instance }}"
+      Name: "{{ instance }}_instance"
+  register: instance
+
+- name: Gather EC2 instance facts
+  ec2_instance_info:
+    profile: "{{ aws_profile }}"
+    region: "{{ aws_region }}"
+    filters:
+      "tag:app": "{{ instance }}"
+      "instance-state-name": "running"
+  register: existing_ec2_instances
+
+- name: Associate EIP to instance
+  ec2_eip:
+    profile: "{{ aws_profile}}"
+    region: "{{ aws_region }}"
+    device_id: "{{ existing_ec2_instances.instances.0.instance_id }}"
+    in_vpc: yes
+    state: present
+    public_ip: "{{ EIP }}"
+    allow_reassociation: yes

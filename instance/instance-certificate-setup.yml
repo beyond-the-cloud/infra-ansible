@@ -1,0 +1,8 @@
+---
+- name: "Setup AWS certbot certificate"
+  hosts: localhost
+  remote_user: ubuntu
+  gather_facts: yes
+  become: true
+  roles:
+    - instance-certificate-setup
