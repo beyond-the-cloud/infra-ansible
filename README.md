@@ -22,11 +22,11 @@ Variables:
   - `instance`: should be either `atlantis` or `jenkins`
 
 ```bash
-ansible-playbook jenkins-instance/jenkins-instance-setup.yml --extra-vars '{"instance": "", "ami": "ami-0bc42be5271f1585a", "EIP": "Your_Elastic_IP"}' -vvv
+ansible-playbook instance/instance-setup.yml --extra-vars '{"instance": "jenkins", "ami": "ami-0a19ced6bd18d0b30", "EIP": "18.214.21.105", "aws_hosted_zone": "bh7cw.me", "aws_dns_record": "jenkins.bh7cw.me"}' -vvv
+ansible-playbook instance/instance-terminate.yml --extra-vars '{"instance": "jenkins", "EIP": "18.214.21.105", "aws_hosted_zone": "bh7cw.me", "aws_dns_record": "jenkins.bh7cw.me"}' -vvv
 
-ansible-playbook jenkins-instance/jenkins-instance-stop.yml -vvv
-
-ansible-playbook jenkins-instance/jenkins-instance-terminate.yml --extra-vars '{"input_filters": {"tag:app": "jenkins", "instance-state-name": "running"}, "EIP": "Your_Elastic_IP"}' -vvv
+ansible-playbook instance/instance-setup.yml --extra-vars '{"instance": "atlantis", "ami": "ami-0b64603de4eef463c", "EIP": "54.234.163.235", "aws_hosted_zone": "bh7cw.me", "aws_dns_record": "atlantis11.bh7cw.me"}' -vvv
+ansible-playbook instance/instance-terminate.yml --extra-vars '{"instance": "atlantis", "EIP": "54.234.163.235", "aws_hosted_zone": "bh7cw.me", "aws_dns_record": "atlantis11.bh7cw.me"}' -vvv
 ```
 
 ## Certbot Certificate
@@ -35,7 +35,15 @@ Variables:
   - `instance`: should be either `atlantis` or `jenkins`
 
 ```bash
-ansible-playbook atlantis-instance/atlantis-instance-certificate-setup.yml --extra-vars '{"instance": "", "domain_name": "xxxxx.xxxx.me", "letsencrypt_email": "xxxx@gmail.com"}' -vvv
+ansible-playbook instance/instance-certificate-setup.yml --extra-vars '{"instance": "jenkins", "domain_name": "jenkins.bh7cw.me", "letsencrypt_email": "ibh7cw@gmail.com"}' -vvv
+
+ansible-playbook instance/instance-certificate-setup.yml --extra-vars '{"domain_name": "atlantis11.bh7cw.me", "letsencrypt_email": "ibh7cw@gmail.com"}' -vvv
+```
+
+## Atlantis Service
+
+```bash
+ansible-playbook instance/atlantis-service-start.yml --extra-vars '{"config_file_path": "templates/config.j2"}' -vvv
 ```
 
 ## Instructions for using packer

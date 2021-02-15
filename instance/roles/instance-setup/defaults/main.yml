@@ -6,3 +6,4 @@ vpc_name: "{{ instance }}-{{ aws_region }}-vpc"
 sshkey: "{{ instance }}_sshkey"
 instance_type: t2.micro
 subnet_name: "{{ instance }}_{{ aws_region }}b"
+ttl: 60

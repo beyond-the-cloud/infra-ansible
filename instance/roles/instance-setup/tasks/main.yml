@@ -61,3 +61,16 @@
     state: present
     public_ip: "{{ EIP }}"
     allow_reassociation: yes
+
+- name: Update an A record with specified EIP
+  route53:
+    profile: "{{ aws_profile }}"
+    state: present
+    overwrite: yes
+    zone: "{{ aws_hosted_zone }}"
+    record: "{{ aws_dns_record }}"
+    type: A
+    ttl: "{{ ttl }}"
+    value: 
+      - "{{ EIP }}"
+    wait: yes

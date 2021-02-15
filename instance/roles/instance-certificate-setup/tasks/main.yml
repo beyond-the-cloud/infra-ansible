@@ -8,14 +8,16 @@
     service:
       name: nginx
       state: restarted
+    register: restart_nginx
+  - debug: var=restart_nginx.stdout_lines
   
   - name: Create letsencrypt certificate
-    shell: certbot --staging -n --nginx -m {{ letsencrypt_email }} --agree-tos -d {{ domain_name }}
+    shell: certbot -n --nginx -m {{ letsencrypt_email }} --agree-tos -d {{ domain_name }}
   
   - name: print jenkins pwd
     shell: cat /var/lib/jenkins/secrets/initialAdminPassword
     register: jenkins_pwd
-    when: "{{ instance }}" == "jenkins"
+    when: instance is defined
 
   - debug: var=jenkins_pwd.stdout_lines
-    when: "{{ instance }}" == "jenkins"
+    when: instance is defined

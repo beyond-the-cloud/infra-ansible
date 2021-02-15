@@ -5,9 +5,7 @@ aws_profile: root
 regions:
   - us-east-1
 filters:
-  tag:app: 
-   - jenkins
-   - atlantis
+  tag:app: jenkins
 keyed_groups:
   - key: tags
     prefix: tag

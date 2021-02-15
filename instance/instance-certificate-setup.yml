@@ -1,8 +1,8 @@
 ---
 - name: "Setup AWS certbot certificate"
-  hosts: localhost
+  hosts: tag_app_jenkins
   remote_user: ubuntu
   gather_facts: yes
-  become: true
+  become: yes
   roles:
     - instance-certificate-setup

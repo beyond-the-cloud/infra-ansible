@@ -36,3 +36,22 @@
     state: absent
     public_ip: "{{ EIP }}"
     release_on_disassociation: no
+
+- name: Retrieve A record with specified EIP
+  route53:
+    profile: "{{ aws_profile}}"
+    state: get
+    zone: "{{ aws_hosted_zone }}"
+    record: "{{ aws_dns_record }}"
+    type: A
+  register: rec
+
+- name: Delete A record with specified EIP
+  route53:
+    profile: "{{ aws_profile}}"
+    state: absent
+    zone: "{{ aws_hosted_zone }}"
+    record: "{{ rec.set.record }}"
+    ttl: "{{ rec.set.ttl }}"
+    type: "{{ rec.set.type }}"
+    value: "{{ rec.set.value }}"

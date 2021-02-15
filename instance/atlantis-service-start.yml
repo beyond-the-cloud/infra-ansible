@@ -1,6 +1,6 @@
 ---
 - name: "Start atlantis server"
-  hosts: localhost
+  hosts: tag_app_atlantis
   remote_user: ubuntu
   gather_facts: yes
   become: true
