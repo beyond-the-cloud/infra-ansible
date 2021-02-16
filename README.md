@@ -10,10 +10,33 @@ Variables:
 
 Examples:
 
-```
+```bash
 ansible-playbook networking/networking-setup.yml --extra-vars '{"service_name": ""}' -vvv
 
-ansible-playbook networking/networking-terminate.yml --extra-vars '{"service_name": ""}' -vvv
+ansible-playbook networking/networking-teardown.yml --extra-vars '{"service_name": ""}' -vvv
+```
+
+## Jenkins Instance
+Variables:
+
+  - `instance`: should be either `atlantis` or `jenkins`
+
+```bash
+ansible-playbook instance/instance-setup.yml --extra-vars '{"instance": "", "ami": "", "EIP": "", "aws_hosted_zone": "xxxx.me", "aws_dns_record": "xxxx.xxxx.me"}' -vvv
+
+ansible-playbook instance/instance-terminate.yml --extra-vars '{"instance": "", "EIP": "", "aws_hosted_zone": "xxxx.me", "aws_dns_record": "xxxx.xxxx.me"}' -vvv
+```
+
+## Certbot Certificate
+
+```bash
+ansible-playbook instance/instance-certificate-setup.yml --extra-vars '{"instance": "", "domain_name": "xxxx.xxxx.me", "letsencrypt_email": "xxxx@gmail.com"}' -vvv
+```
+
+## Atlantis Service
+
+```bash
+ansible-playbook instance/atlantis-service-start.yml --extra-vars '{"config_file_path": "to/path/config.j2"}' -vvv
 ```
 
 ## Instructions for using packer

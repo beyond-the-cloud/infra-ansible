@@ -1,0 +1,8 @@
+---
+- name: "Setup AWS certbot certificate"
+  hosts: tag_app_{{ instance }}
+  remote_user: ubuntu
+  gather_facts: yes
+  become: yes
+  roles:
+    - instance-certificate-setup

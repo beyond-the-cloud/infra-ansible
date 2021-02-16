@@ -1,8 +1,0 @@
----
-- name: "Setup AWS jenkins certificate"
-  hosts: tag_app_jenkins
-  remote_user: ubuntu
-  gather_facts: no
-  become: true
-  roles:
-    - instance-certificate-setup

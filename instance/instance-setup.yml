@@ -1,0 +1,6 @@
+---
+- name: "Setup AWS instance"
+  hosts: localhost
+  gather_facts: yes
+  roles:
+  - instance-setup

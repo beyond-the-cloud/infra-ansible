@@ -1,0 +1,23 @@
+---
+  - name: Replace default nginx config
+    template:
+      src: templates/default.j2
+      dest: /etc/nginx/sites-enabled/default
+  
+  - name: Reload nginx to activate letsencrypt site
+    service:
+      name: nginx
+      state: restarted
+    register: restart_nginx
+  - debug: var=restart_nginx.stdout_lines
+  
+  - name: Create letsencrypt certificate
+    shell: certbot -n --nginx -m {{ letsencrypt_email }} --agree-tos -d {{ domain_name }}
+  
+  - name: print jenkins pwd
+    shell: cat /var/lib/jenkins/secrets/initialAdminPassword
+    register: jenkins_pwd
+    when: '"jenkins" in domain_name'
+
+  - debug: var=jenkins_pwd.stdout_lines
+    when: '"jenkins" in domain_name'

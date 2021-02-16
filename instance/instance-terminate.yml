@@ -1,0 +1,6 @@
+---
+- name: "Terminate AWS instance"
+  hosts: localhost
+  gather_facts: yes
+  roles:
+  - instance-terminate

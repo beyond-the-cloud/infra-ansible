@@ -1,8 +1,0 @@
----
-aws_region: us-east-1
-aws_profile: root
-vpc_name: "atlantis-{{ aws_region }}-vpc"
-sshkey: atlantis_sshkey
-instance_type: t2.micro
-sg_name: atlantis_sg
-subnet_name: "atlantis_{{ aws_region }}b"
