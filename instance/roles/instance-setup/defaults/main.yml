@@ -3,7 +3,7 @@ aws_region: us-east-1
 aws_profile: root
 instance: atlantis
 vpc_name: "{{ instance }}-{{ aws_region }}-vpc"
-sshkey: "{{ instance }}_sshkey"
+sshkey: "root_sshkey"
 instance_type: t2.micro
 subnet_name: "{{ instance }}_{{ aws_region }}b"
 ttl: 60
