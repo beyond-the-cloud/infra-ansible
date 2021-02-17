@@ -57,7 +57,7 @@
     state: present
     lookup: id
     route_table_id: "{{ service_route_table.route_tables[0].id }}"
-    vpc_id: "{{ service_vpc.vpc.id}}"
+    vpc_id: "{{ service_vpc.vpc.id }}"
     profile: "{{ aws_profile }}"
     region: "{{ aws_region }}"
     tags:
@@ -66,6 +66,7 @@
     subnets:
         - "{{ service_vpc_subnets.results[0].subnet.id }}"
         - "{{ service_vpc_subnets.results[1].subnet.id }}"
+        - "{{ service_vpc_subnets.results[2].subnet.id }}"
     routes:
       - dest: 0.0.0.0/0
         gateway_id: "{{ service_igw.gateway_id }}"
@@ -96,3 +97,4 @@
       Name: "{{ service_name }}_sg"
       app: "{{ service_name }}"
   register: service_sg
+  when: (service_name == "jenkins") or (service_name == "atlantis")
