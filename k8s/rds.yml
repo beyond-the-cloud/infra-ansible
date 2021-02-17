@@ -1,0 +1,6 @@
+---
+    - name: "Setup rds cluster"
+      hosts: localhost
+      gather_facts: yes
+      roles:
+        - rds

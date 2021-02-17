@@ -6,14 +6,15 @@ Repository for Ansible Playbooks
 
 Variables:
 
-  - `service_name`: should be either `atlantis` or `jenkins`
+  - `service_name`: should be `atlantis`, `jenkins` or `rds`
+  - `aws_profile`: should be `root`, `dev` or `prod`
 
 Examples:
 
 ```bash
-ansible-playbook networking/networking-setup.yml --extra-vars '{"service_name": ""}' -vvv
+ansible-playbook networking/networking-setup.yml --extra-vars '{"service_name": "", "aws_profile": ""}' -vvv
 
-ansible-playbook networking/networking-teardown.yml --extra-vars '{"service_name": ""}' -vvv
+ansible-playbook networking/networking-teardown.yml --extra-vars '{"service_name": "", "aws_profile": ""}' -vvv
 ```
 
 ## Jenkins Instance

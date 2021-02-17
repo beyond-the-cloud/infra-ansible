@@ -5,3 +5,60 @@
   register: az
 
 - debug: var=az.availability_zones
+
+- name: get k8s vpc cidr
+  ec2_vpc_net_facts:
+    profile: "{{ aws_profile}}"
+    region: "{{ aws_region }}"
+    filters:
+      "tag:Name": "{{ k8s_vpc_name }}"
+  register: k8s_vpc_facts
+
+- name: set k8s vpc facts
+  set_fact:
+    k8s_vpc_cidr: "{{ k8s_vpc_facts.vpcs.0.cidr_block }}"
+    k8s_vpc_id: "{{ k8s_vpc_facts.vpcs.0.vpc_id }}"
+- debug: var=k8s_vpc_cidr
+
+- name: get vpc facts
+  ec2_vpc_net_facts:
+    profile: "{{ aws_profile}}"
+    region: "{{ aws_region }}"
+    filters:
+      "tag:Name": "{{ sg_vpc_name }}"
+  register: rds_vpc_facts
+
+- name: set vpc facts
+  set_fact:
+    rds_vpc_cidr: "{{ rds_vpc_facts.vpcs.0.cidr_block }}"
+    rds_vpc_id: "{{ rds_vpc_facts.vpcs.0.vpc_id }}"
+- debug: var=rds_vpc_id
+
+- name: Get vpc subnet facts
+  ec2_vpc_subnet_facts:
+    profile: "{{ aws_profile}}"
+    region: "{{ aws_region }}"
+    filters:
+      "tag:Name": "{{ subnet_name }}"
+  register: subnet_facts
+
+- name: Set vpc subnet facts
+  set_fact:
+    vpc_subnet_id: "{{ subnet_facts.subnets.0.subnet_id }}"
+- debug: var=vpc_subnet_id
+
+- name: Grab the rds route tables
+  ec2_vpc_route_table_info:
+    profile: "{{ aws_profile }}"
+    region: "{{ aws_region }}"
+    filters:
+      vpc-id: "{{ rds_vpc_id }}"
+  register: rds_route_table
+
+- name: Grab the k8s route tables
+  ec2_vpc_route_table_info:
+    profile: "{{ aws_profile }}"
+    region: "{{ aws_region }}"
+    filters:
+      vpc-id: "{{ k8s_vpc_id }}"
+  register: k8s_route_table
