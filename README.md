@@ -36,7 +36,7 @@ ansible-playbook k8s-cluster/delete-k8s-cluster.yml --extra-vars '{"k8s_domain_n
 unset AWS_ACCESS_KEY_ID
 unset AWS_SECRET_ACCESS_KEY
 
-ansible-playbook k8s/setup-rds.yml --extra-vars '{"k8s_domain_name":"", "aws_profile": "", "rds_username": "", "rds_password": "", "rds_instance_name": ""}' -vvv
+ansible-playbook k8s/setup-rds.yml --extra-vars '{"k8s_domain_name":"", "aws_profile": "", "rds_username": "", "rds_password": "", "rds_instance_name": "", "rds_db_name": ""}' -vvv
 
 ansible-playbook k8s/delete-rds.yml --extra-vars '{"aws_profile":"", "rds_instance_name": ""}' -vvv
 ```
