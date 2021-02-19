@@ -98,3 +98,16 @@
       app: "{{ service_name }}"
   register: service_sg
   when: (service_name == "jenkins") or (service_name == "atlantis")
+
+- name: Create rds subnet group
+  rds_subnet_group:
+    state: present
+    profile: "{{ aws_profile }}"
+    region: "{{ aws_region }}"
+    name: "{{ service_name }}_subnet_group_{{ service_vpc.vpc.id }}"
+    description: Subnet Group For RDS Insatnces
+    subnets:
+      - "{{ service_vpc_subnets.results[0].subnet.id }}"
+      - "{{ service_vpc_subnets.results[1].subnet.id }}"
+      - "{{ service_vpc_subnets.results[2].subnet.id }}"
+  when: service_name == "rds"

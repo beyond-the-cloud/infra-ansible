@@ -72,3 +72,11 @@
     vpc_id: "{{ vpc_facts.vpcs.0.id }}"
     route_table_id: "{{ route_table_id }}"
   register: "service_route_table_teardown"
+
+- name: Teardown rds subnet group when service is rds
+  rds_subnet_group:
+    state: absent
+    profile: "{{ aws_profile }}"
+    region: "{{ aws_region }}"
+    name: "{{ service_name }}_subnet_group_{{ vpc_id }}"
+  when: service_name == "rds"

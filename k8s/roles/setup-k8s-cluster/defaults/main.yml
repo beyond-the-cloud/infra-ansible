@@ -1,6 +1,3 @@
 ---
 aws_region: us-east-1
 aws_profile: prod
-service_name: rds
-rds_username: mysql
-rds_password: 1nsecure
