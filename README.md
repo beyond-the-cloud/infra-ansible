@@ -17,7 +17,32 @@ ansible-playbook networking/networking-setup.yml --extra-vars '{"service_name": 
 ansible-playbook networking/networking-teardown.yml --extra-vars '{"service_name": "", "aws_profile": ""}' -vvv
 ```
 
+## K8s Cluster
+
+```bash
+export AWS_ACCESS_KEY_ID=$(aws configure --profile AWS_PROFILE get aws_access_key_id)
+export AWS_SECRET_ACCESS_KEY=$(aws configure --profile AWS_PROFILE get aws_secret_access_key)
+export NAME=k8s.prod.DOMAIN.me
+export KOPS_STATE_STORE=s3://k8s.prod.DOMAIN.me
+
+ansible-playbook k8s/setup-k8s-cluster.yml --extra-vars '{"k8s_domain_name": "", "node_count": "3", "node_size": "m5.large", "master_size": "c5.large", "kubernetes_version": "1.18.15", "ssh_public_key": "", "aws_profile": ""}' -vvv
+
+ansible-playbook k8s-cluster/delete-k8s-cluster.yml --extra-vars '{"k8s_domain_name": ""}' -vvv
+```
+
+## RDS 
+
+```bash
+unset AWS_ACCESS_KEY_ID
+unset AWS_SECRET_ACCESS_KEY
+
+ansible-playbook k8s/setup-rds.yml --extra-vars '{"k8s_domain_name":"", "aws_profile": "", "rds_username": "", "rds_password": "", "rds_instance_name": ""}' -vvv
+
+ansible-playbook k8s/delete-rds.yml --extra-vars '{"aws_profile":"", "rds_instance_name": ""}' -vvv
+```
+
 ## Jenkins Instance
+
 Variables:
 
   - `instance`: should be either `atlantis` or `jenkins`
