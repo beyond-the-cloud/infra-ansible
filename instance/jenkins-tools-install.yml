@@ -1,0 +1,8 @@
+---
+- name: "Install additional tools on jenkins server"
+  hosts: tag_app_jenkins
+  remote_user: ubuntu
+  gather_facts: yes
+  become: true
+  roles:
+    - jenkins-tools-install
