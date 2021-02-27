@@ -1,3 +1,10 @@
 ---
 - name: Delete cluster
   shell: kops delete cluster --name "{{ k8s_domain_name }}" --state=s3://"{{ k8s_domain_name }}" --yes
+
+- name: Unset env vars
+  shell: |
+    unset AWS_ACCESS_KEY_ID
+    unset AWS_SECRET_ACCESS_KEY
+    unset NAME
+    unset KOPS_STATE_STORE

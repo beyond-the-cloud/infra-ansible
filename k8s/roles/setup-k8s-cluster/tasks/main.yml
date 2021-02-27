@@ -3,6 +3,13 @@
   import_role:
     name: common
 
+- name: Set up aws credentials
+  shell: |
+    export AWS_ACCESS_KEY_ID=$(aws configure --profile "{{ aws_profile }}" get aws_access_key_id)
+    export AWS_SECRET_ACCESS_KEY=$(aws configure --profile "{{ aws_profile }}" get aws_secret_access_key)
+    export NAME="{{ k8s_domain_name }}"
+    export KOPS_STATE_STORE=s3://"{{ k8s_domain_name }}"
+
 - name: Create cluster when az >= 3
   shell: |
     kops create cluster \

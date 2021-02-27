@@ -1,6 +1,5 @@
 ---
 aws_region: us-east-1
-aws_profile: prod
 service_name: rds
 sg_vpc_name: "{{ service_name }}-{{ aws_region }}-vpc"
 subnet_name: "{{ service_name }}_{{ aws_region }}b"

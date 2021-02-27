@@ -3,6 +3,5 @@
       hosts: localhost
       gather_facts: yes
       roles:
+        - delete-rds
         - delete-k8s-cluster
-      environment:
-        AWS_PROFILE: kops

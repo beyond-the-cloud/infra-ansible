@@ -1,6 +1,0 @@
----
-    - name: "Delete rds cluster"
-      hosts: localhost
-      gather_facts: yes
-      roles:
-        - delete-rds
