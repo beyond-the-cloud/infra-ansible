@@ -1,6 +1,7 @@
 ---
 - name: Gather information about all availability zones
   aws_az_info:
+    profile: "{{ aws_profile }}"
     region: "{{ aws_region }}"
   register: az
 
