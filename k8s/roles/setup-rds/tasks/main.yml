@@ -13,7 +13,7 @@
     k8s_vpc_id: "{{ k8s_vpc_facts.vpcs.0.vpc_id }}"
 - debug: var=k8s_vpc_cidr
 
-- name: get vpc facts
+- name: get rds vpc facts
   ec2_vpc_net_facts:
     profile: "{{ aws_profile}}"
     region: "{{ aws_region }}"
@@ -21,7 +21,7 @@
       "tag:Name": "{{ sg_vpc_name }}"
   register: rds_vpc_facts
 
-- name: set vpc facts
+- name: set rds vpc facts
   set_fact:
     rds_vpc_cidr: "{{ rds_vpc_facts.vpcs.0.cidr_block }}"
     rds_vpc_id: "{{ rds_vpc_facts.vpcs.0.vpc_id }}"
