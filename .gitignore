@@ -1,3 +1,4 @@
+.DS_Store
 **/atlantis-service-start/templates/config.j2
 
 # Byte-compiled / optimized / DLL files
