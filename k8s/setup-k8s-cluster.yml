@@ -5,3 +5,5 @@
       roles:
         - setup-k8s-cluster
         - setup-rds
+        - setup-kafka
+        - setup-elasticsearch
