@@ -1,0 +1,5 @@
+---
+- name: Set up elasticsearch cluster
+  shell: |
+    helm repo add elastic https://helm.elastic.co
+    helm install elasticsearch elastic/elasticsearch
