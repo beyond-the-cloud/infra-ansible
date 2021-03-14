@@ -3,5 +3,7 @@
       hosts: localhost
       gather_facts: yes
       roles:
+        - delete-elasticsearch
+        - delete-kafka
         - delete-rds
         - delete-k8s-cluster

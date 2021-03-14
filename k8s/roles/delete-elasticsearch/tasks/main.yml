@@ -1,0 +1,4 @@
+---
+- name: Delete elasticsearch cluster
+  shell: |
+    helm uninstall elasticsearch

@@ -1,0 +1,8 @@
+---
+- name: Delete kafka-client
+  shell: |
+    kubectl delete pods kafka-client
+
+- name: Delete kafka cluster
+  shell: |
+    helm uninstall kafka
