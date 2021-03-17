@@ -6,6 +6,38 @@
   import_role:
     name: common
 
+- name: get k8s vpc cidr
+  ec2_vpc_net_facts:
+    profile: "{{ aws_profile}}"
+    region: "{{ aws_region }}"
+    filters:
+      "tag:Name": "{{ k8s_vpc_name }}"
+  register: k8s_vpc_facts
+
+- name: set k8s vpc facts
+  set_fact:
+    k8s_vpc_cidr: "{{ k8s_vpc_facts.vpcs.0.cidr_block }}"
+    k8s_vpc_id: "{{ k8s_vpc_facts.vpcs.0.vpc_id }}"
+- debug: var=k8s_vpc_cidr
+
+- name: Grab the k8s route tables
+  ec2_vpc_route_table_info:
+    profile: "{{ aws_profile }}"
+    region: "{{ aws_region }}"
+    filters:
+      vpc-id: "{{ k8s_vpc_id }}"
+      "tag:Name": "{{ k8s_vpc_name }}"
+  register: k8s_route_table
+
+- name: Get k8s igw info
+  ec2_vpc_igw_info:
+    profile: "{{ aws_profile }}"
+    region: "{{ aws_region }}"
+    filters:
+      "tag:Name": "{{ k8s_vpc_name }}"
+      attachment.vpc-id: "{{ k8s_vpc_id }}"
+  register: k8s_igw
+
 - name: get rds vpc facts
   ec2_vpc_net_facts:
     profile: "{{ aws_profile}}"
@@ -47,18 +79,31 @@
 
 - debug: msg="{{ rds_sg }}"
 
+- name: set db_name facts when rds
+  set_fact:
+    db_name: "csye7125"
+  when: service_name == "rds"
+
+- name: set db_name facts when rdsbest
+  set_fact:
+    db_name: "beststories"
+  when: service_name == "rdsbest"
+
+- debug:
+       var=service_name
+
 - name: Provision rds instance
   rds:
     command: create
     profile: "{{ aws_profile}}"
     region: "{{ aws_region }}"
-    instance_name: "{{ rds_instance_name }}"
+    instance_name: "{{ service_name }}"
     db_engine: MySQL
     engine_version: 8.0.20
     size: 20
     instance_type: db.t2.micro
     port: 3306
-    db_name: "{{ rds_db_name }}"
+    db_name: "{{ db_name }}"
     username: "{{ rds_username }}"
     password: "{{ rds_password }}"
     subnet: "rds_subnet_group_{{ rds_vpc_id }}"

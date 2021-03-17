@@ -4,39 +4,8 @@
     helm repo add bitnami https://charts.bitnami.com/bitnami
     helm install kafka -f kafka/values.yaml bitnami/kafka --wait
 
-# - name: Test the Kafka cluster
-#   shell: |
-#     helm test kafka
-
-# - name: Wait till the zookeeper is ready
-#   community.kubernetes.k8s_info:
-#     kind: Pod
-#     wait: yes
-#     name: kafka-zookeeper-0
-#     namespace: default
-#     wait_sleep: 5
-#     wait_timeout: 360
-
-# - name: Wait till the kafka is ready
-#   community.kubernetes.k8s_info:
-#     kind: Pod
-#     wait: yes
-#     name: kafka-0
-#     namespace: default
-#     wait_sleep: 5
-#     wait_timeout: 360
-
-# - name: Run Kafka Client
-#   shell: |
-#     kubectl run kafka-client --restart='Never' --image docker.io/bitnami/kafka:2.7.0-debian-10-r64 --namespace default --command -- sleep infinity
-
-# - name: Check Kafka pods are running
-#   shell: kubectl get pods -o json
-#   register: kubectl_get_pods
-#   until: kubectl_get_pods.stdout|from_json|json_query('items[*].status.phase')|unique == ["Running"]
-
-# - name: Verify Kafka is ready
-#   shell: |
-#     kubectl exec -i kafka-client --namespace default -- kafka-topics.sh --create --topic test --bootstrap-server kafka.default.svc.cluster.local:9092 --replication-factor 1 --partitions 2 --config max.message.bytes=64000 --config flush.messages=1
-#     kubectl exec -i kafka-client --namespace default -- kafka-topics.sh --describe --topic test --bootstrap-server kafka.default.svc.cluster.local:9092
-#     kubectl exec -i kafka-client --namespace default -- kafka-topics.sh --list --bootstrap-server kafka.default.svc.cluster.local:9092
+- name: Verify Kafka topics
+  shell: |
+    kubectl run kafka-client --restart='Never' --image docker.io/bitnami/kafka:2.7.0-debian-10-r64 --namespace default --command -- sleep infinity
+    sleep 10
+    kubectl exec -i kafka-client --namespace default -- kafka-topics.sh --list --bootstrap-server kafka.default.svc.cluster.local:9092
