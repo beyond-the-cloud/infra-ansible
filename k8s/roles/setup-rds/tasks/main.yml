@@ -1,4 +1,26 @@
 ---
+- name: include variables
+  include_vars:
+    file: "{{ service_name }}.yml"
+
+- name: Import Common Role
+  import_role:
+    name: common
+
+- name: get rds vpc facts
+  ec2_vpc_net_facts:
+    profile: "{{ aws_profile}}"
+    region: "{{ aws_region }}"
+    filters:
+      "tag:Name": "{{ sg_vpc_name }}"
+  register: rds_vpc_facts
+
+- name: set rds vpc facts
+  set_fact:
+    rds_vpc_cidr: "{{ rds_vpc_facts.vpcs.0.cidr_block }}"
+    rds_vpc_id: "{{ rds_vpc_facts.vpcs.0.vpc_id }}"
+- debug: var=rds_vpc_id
+
 - name: Grab the rds route tables
   ec2_vpc_route_table_info:
     profile: "{{ aws_profile }}"
