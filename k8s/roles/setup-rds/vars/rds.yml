@@ -1,2 +1,2 @@
 ---
-service_name: rds
+service_name: {{ service_name }}

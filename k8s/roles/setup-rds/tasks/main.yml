@@ -1,7 +1,6 @@
 ---
-- name: include variables
-  include_vars:
-    file: "{{ service_name }}.yml"
+- include: rds.yml service_name=rds
+- include: rds.yml service_name=rdsbest
 
 - name: Import Common Role
   import_role:
