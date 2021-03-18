@@ -99,7 +99,7 @@
     db_name: "{{ db_name }}"
     username: "{{ rds_username }}"
     password: "{{ rds_password }}"
-    subnet: "rds_subnet_group_{{ rds_vpc_id }}"
+    subnet: "{{ service_name }}_subnet_group_{{ rds_vpc_id }}"
     vpc_security_groups: 
       - "{{ rds_sg.group_id }}"
     publicly_accessible: no
