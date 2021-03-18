@@ -1,6 +1,6 @@
 ---
-- include: rds.yml service_name=rds
-- include: rds.yml service_name=rdsbest
+- include: roles/setup-rds/vars/rds.yml service_name=rds
+- include: roles/setup-rds/vars/rds.yml service_name=rdsbest
 
 - name: Import Common Role
   import_role:
