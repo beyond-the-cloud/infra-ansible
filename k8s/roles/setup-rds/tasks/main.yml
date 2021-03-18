@@ -1,10 +1,6 @@
 ---
-- include: rds.yml service_name=rds
-- include: rds.yml service_name=rdsbest
-
-- name: Import Common Role
-  import_role:
-    name: common
+- include: roles/setup-rds/vars/rds.yml
+- include: roles/setup-rds/vars/rdsbest.yml
 
 - name: get k8s vpc cidr
   ec2_vpc_net_facts:
