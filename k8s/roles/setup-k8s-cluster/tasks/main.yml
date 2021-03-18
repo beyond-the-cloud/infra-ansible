@@ -14,6 +14,7 @@
       --node-size="{{ node_size }}" \
       --master-size="{{ master_size }}" \
       --master-zones="{{ az.availability_zones.0.zone_name }}","{{ az.availability_zones.1.zone_name }}","{{ az.availability_zones.2.zone_name }}" \
+      --kubernetes-version="{{ kubernetes_version }}" \
       --networking cilium \
       --topology=private \
       --bastion=true \
