@@ -110,4 +110,4 @@
       - "{{ service_vpc_subnets.results[0].subnet.id }}"
       - "{{ service_vpc_subnets.results[1].subnet.id }}"
       - "{{ service_vpc_subnets.results[2].subnet.id }}"
-  when: service_name == "rds"
+  when: '"rds" in service_name'
