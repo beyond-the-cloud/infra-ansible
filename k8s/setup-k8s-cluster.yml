@@ -3,12 +3,7 @@
       hosts: localhost
       gather_facts: yes
       roles:
-        # - setup-k8s-cluster
+        - setup-k8s-cluster
         - setup-rds
-        # - setup-rdsbest
-        # - setup-rdsnew
-        # - setup-rdstop
-        # - setup-rdsnotifier
-        # - setup-k8s-route-table
-        # - setup-kafka
-        # - setup-elasticsearch
+        - setup-kafka
+        - setup-elasticsearch
