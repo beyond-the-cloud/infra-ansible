@@ -72,19 +72,6 @@
 
 - debug: msg="{{ rds_sg }}"
 
-- name: set db_name facts when rds
-  set_fact:
-    db_name: "csye7125"
-  when: service_name == "rds"
-
-- name: set db_name facts when rdsbest
-  set_fact:
-    db_name: "beststories"
-  when: service_name == "rdsbest"
-
-- debug:
-       var=service_name
-
 - name: Provision rds instance
   rds:
     command: create
@@ -96,10 +83,10 @@
     size: 20
     instance_type: db.t2.micro
     port: 3306
-    db_name: "{{ db_name }}"
+    db_name: "csye7125"
     username: "{{ rds_username }}"
     password: "{{ rds_password }}"
-    subnet: "rds_subnet_group_{{ rds_vpc_id }}"
+    subnet: "{{ service_name }}_subnet_group_{{ rds_vpc_id }}"
     vpc_security_groups: 
       - "{{ rds_sg.group_id }}"
     publicly_accessible: no
@@ -120,7 +107,7 @@
     profile: "{{ aws_profile }}"
     region: "{{ aws_region }}"
     tags:
-      Name: "rds_k8s"
+      Name: "{{ service_name }}_k8s"
   register: rds_vpc_peer
 
 - name: Accept local VPC peering request - rds accept
