@@ -4,7 +4,7 @@
     profile: "{{ aws_profile }}"
     region: "{{ aws_region }}"
     filters:
-      "tag:Name": "rds_k8s"
+      "tag:Name": "{{ service_name }}_k8s"
   register: vpc_peer_facts
   
 - name: Set vpc peering facts
@@ -30,7 +30,7 @@
 
 - name: get vpc facts
   ec2_vpc_net_facts:
-    profile: "{{ aws_profile}}"
+    profile: "{{ aws_profile }}"
     region: "{{ aws_region }}"
     filters:
       "tag:Name": "{{ sg_vpc_name }}"
