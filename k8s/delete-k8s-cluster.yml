@@ -3,11 +3,11 @@
       hosts: localhost
       gather_facts: yes
       roles:
-        - delete-elasticsearch
-        - delete-kafka
-        - delete-rds
-        - delete-rdsbest
-        - delete-rdsnew
-        - delete-rdstop
-        - delete-rdsnotifier
+        # - delete-elasticsearch
+        # - delete-kafka
+        # - delete-rds
+        # - delete-rdsbest
+        # - delete-rdsnew
+        # - delete-rdstop
+        # - delete-rdsnotifier
         - delete-k8s-cluster

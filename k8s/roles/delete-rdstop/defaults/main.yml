@@ -1,6 +1,0 @@
----
-aws_region: us-east-1
-service_name: rdstop
-sg_vpc_name: "{{ service_name }}-{{ aws_region }}-vpc"
-subnet_name: "{{ service_name }}_{{ aws_region }}b"
-k8s_vpc_name: "{{ k8s_domain_name }}"

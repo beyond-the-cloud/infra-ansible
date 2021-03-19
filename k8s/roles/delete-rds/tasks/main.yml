@@ -24,9 +24,15 @@
     profile: "{{ aws_profile }}"
     region: "{{ aws_region }}"
     command: delete
-    instance_name: "{{ service_name }}"
+    instance_name: "{{ item }}"
     wait: yes
     wait_timeout: 600
+  with_items:
+    - rds
+    - rdsbest
+    - rdsnew
+    - rdsnotifier
+    - rdstop
 
 - name: get vpc facts
   ec2_vpc_net_facts:

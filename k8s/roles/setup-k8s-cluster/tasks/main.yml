@@ -3,41 +3,41 @@
   import_role:
     name: common
 
-- name: Create cluster when az >= 3
-  shell: |
-    kops create cluster \
-      --name="{{ k8s_domain_name }}" \
-      --state=s3://"{{ k8s_domain_name }}" \
-      --node-count="{{ node_count }}" \
-      --cloud=aws \
-      --zones="{{ az.availability_zones.0.zone_name }}","{{ az.availability_zones.1.zone_name }}","{{ az.availability_zones.2.zone_name }}" \
-      --node-size="{{ node_size }}" \
-      --master-size="{{ master_size }}" \
-      --master-zones="{{ az.availability_zones.0.zone_name }}","{{ az.availability_zones.1.zone_name }}","{{ az.availability_zones.2.zone_name }}" \
-      --kubernetes-version="{{ kubernetes_version }}" \
-      --networking cilium \
-      --topology=private \
-      --bastion=true \
-      --ssh-public-key="{{ ssh_public_key }}"
-  when: az.availability_zones | length | int >= 3
+# - name: Create cluster when az >= 3
+#   shell: |
+#     kops create cluster \
+#       --name="{{ k8s_domain_name }}" \
+#       --state=s3://"{{ k8s_domain_name }}" \
+#       --node-count="{{ node_count }}" \
+#       --cloud=aws \
+#       --zones="{{ az.availability_zones.0.zone_name }}","{{ az.availability_zones.1.zone_name }}","{{ az.availability_zones.2.zone_name }}" \
+#       --node-size="{{ node_size }}" \
+#       --master-size="{{ master_size }}" \
+#       --master-zones="{{ az.availability_zones.0.zone_name }}","{{ az.availability_zones.1.zone_name }}","{{ az.availability_zones.2.zone_name }}" \
+#       --kubernetes-version="{{ kubernetes_version }}" \
+#       --networking cilium \
+#       --topology=private \
+#       --bastion=true \
+#       --ssh-public-key="{{ ssh_public_key }}"
+#   when: az.availability_zones | length | int >= 3
     
-- name: Create cluster when az < 3
-  shell: |
-    kops create cluster \
-      --name="{{ k8s_domain_name }}" \
-      --state=s3://"{{ k8s_domain_name }}" \
-      --node-count="{{ node_count }}" \
-      --cloud=aws \
-      --zones="{{ az.availability_zones.0.zone_name }}","{{ az.availability_zones.0.zone_name }}","{{ az.availability_zones.0.zone_name }}" \
-      --node-size="{{ node_size }}" \
-      --master-size="{{ master_size }}" \
-      --master-zones="{{ az.availability_zones.0.zone_name }}","{{ az.availability_zones.0.zone_name }}","{{ az.availability_zones.0.zone_name }}" \
-      --kubernetes-version="{{ kubernetes_version }}" \
-      --networking cilium \
-      --topology=private \
-      --bastion=true \
-      --ssh-public-key="{{ ssh_public_key }}"
-  when: az.availability_zones | length | int < 3
+# - name: Create cluster when az < 3
+#   shell: |
+#     kops create cluster \
+#       --name="{{ k8s_domain_name }}" \
+#       --state=s3://"{{ k8s_domain_name }}" \
+#       --node-count="{{ node_count }}" \
+#       --cloud=aws \
+#       --zones="{{ az.availability_zones.0.zone_name }}","{{ az.availability_zones.0.zone_name }}","{{ az.availability_zones.0.zone_name }}" \
+#       --node-size="{{ node_size }}" \
+#       --master-size="{{ master_size }}" \
+#       --master-zones="{{ az.availability_zones.0.zone_name }}","{{ az.availability_zones.0.zone_name }}","{{ az.availability_zones.0.zone_name }}" \
+#       --kubernetes-version="{{ kubernetes_version }}" \
+#       --networking cilium \
+#       --topology=private \
+#       --bastion=true \
+#       --ssh-public-key="{{ ssh_public_key }}"
+#   when: az.availability_zones | length | int < 3
 
 - name: Update cluster
   shell: kops update cluster --name "{{ k8s_domain_name }}" --state s3://"{{ k8s_domain_name }}" --yes --admin
