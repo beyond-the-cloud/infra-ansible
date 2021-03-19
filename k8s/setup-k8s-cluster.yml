@@ -8,5 +8,6 @@
         - setup-rdsbest
         - setup-rdsnew
         - setup-rdstop
+        - setup-rdsnotifier
         - setup-kafka
         - setup-elasticsearch

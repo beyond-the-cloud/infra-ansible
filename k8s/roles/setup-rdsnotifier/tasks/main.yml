@@ -83,7 +83,7 @@
     size: 20
     instance_type: db.t2.micro
     port: 3306
-    db_name: "csye7125"
+    db_name: "notifier"
     username: "{{ rds_username }}"
     password: "{{ rds_password }}"
     subnet: "{{ service_name }}_subnet_group_{{ rds_vpc_id }}"
@@ -107,7 +107,7 @@
     profile: "{{ aws_profile }}"
     region: "{{ aws_region }}"
     tags:
-      Name: "{{ service_name }}_k8s"
+      Name: "rds_k8s"
   register: rds_vpc_peer
 
 - name: Accept local VPC peering request - rds accept
@@ -131,17 +131,17 @@
         vpc_peering_connection_id: "{{ rds_vpc_peer.peering_id }}"
   register: update_rds_route_table
 
-- name: Update the MAIN route table in the k8s vpc with rds
-  ec2_vpc_route_table:
-    state: present
-    lookup: id
-    route_table_id: "{{ k8s_route_table.route_tables[0].id }}"
-    vpc_id: "{{ k8s_vpc_id }}"
-    profile: "{{ aws_profile }}"
-    region: "{{ aws_region }}"
-    routes:
-      - dest: 0.0.0.0/0
-        gateway_id: "{{ k8s_igw.internet_gateways.0.internet_gateway_id }}"
-      - dest: "{{ rds_vpc_cidr }}"
-        vpc_peering_connection_id: "{{ rds_vpc_peer.peering_id }}"
-  register: rds_update_k8s_route_table
+# - name: Update the MAIN route table in the k8s vpc with rds
+#   ec2_vpc_route_table:
+#     state: present
+#     lookup: id
+#     route_table_id: "{{ k8s_route_table.route_tables[0].id }}"
+#     vpc_id: "{{ k8s_vpc_id }}"
+#     profile: "{{ aws_profile }}"
+#     region: "{{ aws_region }}"
+#     routes:
+#       - dest: 0.0.0.0/0
+#         gateway_id: "{{ k8s_igw.internet_gateways.0.internet_gateway_id }}"
+#       - dest: "{{ rds_vpc_cidr }}"
+#         vpc_peering_connection_id: "{{ rds_vpc_peer.peering_id }}"
+#   register: rds_update_k8s_route_table

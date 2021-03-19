@@ -79,4 +79,4 @@
     profile: "{{ aws_profile }}"
     region: "{{ aws_region }}"
     name: "{{ service_name }}_subnet_group_{{ vpc_id }}"
-  when: service_name == "rds"
+  when: '"rds" in service_name'
