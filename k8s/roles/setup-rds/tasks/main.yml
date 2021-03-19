@@ -77,13 +77,13 @@
     command: create
     profile: "{{ aws_profile}}"
     region: "{{ aws_region }}"
-    instance_name: "{{ item }}"
+    instance_name: "{{ item.service_name }}"
     db_engine: MySQL
     engine_version: 8.0.20
     size: 20
     instance_type: db.t2.micro
     port: 3306
-    db_name: "csye7125"
+    db_name: "{{ item.db_name }}"
     username: "{{ rds_username }}"
     password: "{{ rds_password }}"
     subnet: "{{ service_name }}_subnet_group_{{ rds_vpc_id }}"
@@ -93,13 +93,13 @@
     wait: yes
     wait_timeout: 600
     tags:
-      Name: "{{ item }}"
+      Name: "{{ item.service_name }}"
   with_items:
-    - rds
-    - rdsbest
-    - rdsnew
-    - rdsnotifier
-    # - rdstop
+     - { service_name: rds, db_name: csye7125}
+     - { service_name: rdsbest, db_name: beststories}
+     - { service_name: rdsnew, db_name: newstories}
+     - { service_name: rdsnotifier, db_name: notifier}
+     - { service_name: rdstop, db_name: topstories}
 
 - name: Setup VPC peering - k8s request
   ec2_vpc_peer:
