@@ -39,8 +39,17 @@
       --ssh-public-key="{{ ssh_public_key }}"
   when: az.availability_zones | length | int < 3
 
+- name: Config cluster
+  shell: |
+    export KOPS_FEATURE_FLAGS=SpecOverrideFlag
+    kops set cluster "{{ k8s_domain_name }}" spec.kubelet.authenticationTokenWebhook=true
+    kops set cluster "{{ k8s_domain_name }}" spec.kubelet.authorizationMode=Webhook
+
 - name: Update cluster
   shell: kops update cluster --name "{{ k8s_domain_name }}" --state s3://"{{ k8s_domain_name }}" --yes --admin
 
 - name: Validate cluster
-  shell: kops validate cluster --name ${NAME} --state s3://"{{ k8s_domain_name }}" --wait 10m
+  shell: kops validate cluster --name ${NAME} --state s3://"{{ k8s_domain_name }}" --wait 12m
+
+- name: Install metrics-server to cluster
+  shell: kubectl apply -f metrics-server/metrics-server.yml
