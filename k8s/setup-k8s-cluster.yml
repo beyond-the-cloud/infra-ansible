@@ -7,3 +7,4 @@
         - setup-rds
         - setup-kafka
         - setup-elasticsearch
+        - setup-ingress-controller

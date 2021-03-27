@@ -1,0 +1,6 @@
+---
+- name: Set up NGINX Ingress Controller
+  shell: |
+    helm repo add nginx-edge https://helm.nginx.com/edge
+    helm repo update
+    helm install nginx-ingress nginx-edge/nginx-ingress --devel
