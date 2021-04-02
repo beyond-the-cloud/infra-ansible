@@ -1,0 +1,29 @@
+---
+- name: Set up NGINX Ingress Controller
+  shell: |
+    helm repo add bitnami https://charts.bitnami.com/bitnami
+    helm install ingress bitnami/nginx-ingress-controller
+    sleep 10
+
+- name: Get hostname facts
+  shell: kubectl get svc --namespace default ingress-nginx-ingress-controller -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'
+  register: hostname
+
+- name: Add a cname record
+  community.aws.route53:
+    command: create
+    zone: k8s.prod.bh7cw.me
+    record: webapp.k8s.prod.bh7cw.me
+    type: CNAME
+    ttl: 60
+    value: "{{ hostname.stdout }}"
+
+- name: Set up cert-manager
+  shell: |
+    helm repo add jetstack https://charts.jetstack.io
+    kubectl create namespace cert-manager
+    kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v0.14.1/cert-manager.crds.yaml
+    kubectl apply -f cert-manager/letsencrypt-staging.yaml
+    kubectl apply -f cert-manager/letsencrypt-prod.yaml
+    helm install cert-manager --namespace cert-manager jetstack/cert-manager --version v0.14.1
+    kubectl apply -f cert-manager/multi-app-ingress.yaml
