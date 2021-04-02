@@ -11,7 +11,7 @@ spec:
   - host: webapp.k8s.prod.bh7cw.me
     http:
       paths:
-      - path: /webapp
+      - path: /
         pathType: Prefix
         backend:
           serviceName: webapp-deployment-svc

@@ -16,7 +16,7 @@
     record: webapp.k8s.prod.bh7cw.me
     type: CNAME
     ttl: 60
-    value: hostname.stdout
+    value: "{{ hostname.stdout }}"
 
 - name: Set up cert-manager
   shell: |
