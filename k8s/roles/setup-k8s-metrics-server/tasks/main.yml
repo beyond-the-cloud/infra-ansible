@@ -1,0 +1,3 @@
+---
+- name: Install metrics-server to cluster
+  shell: kubectl apply -f metrics-server/metrics-server.yml

@@ -1,0 +1,3 @@
+---
+- name: Install EFK
+  shell: helm install efk /Users/bboysticker/Development/CSYE7125/helm-chart-efk/efk

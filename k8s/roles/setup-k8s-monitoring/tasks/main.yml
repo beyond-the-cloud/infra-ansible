@@ -1,0 +1,6 @@
+---
+- name: Create namespace
+  shell: kubectl create ns monitoring
+
+- name: Install monitoring stack
+  shell: helm install prometheus /Users/bboysticker/Development/CSYE7125/helm-chart-metrics/metrics
