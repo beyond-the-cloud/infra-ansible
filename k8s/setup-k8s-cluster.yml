@@ -4,6 +4,9 @@
       gather_facts: yes
       roles:
         - setup-k8s-cluster
+        - setup-k8s-metrics-server
+        - setup-k8s-efk
+        - setup-k8s-monitoring
         - setup-rds
         - setup-kafka
         - setup-elasticsearch

@@ -18,7 +18,8 @@
       --networking cilium \
       --topology=private \
       --bastion=true \
-      --ssh-public-key="{{ ssh_public_key }}"
+      --ssh-public-key="{{ ssh_public_key }}" \
+      --cloud-labels "k8s.io/cluster-autoscaler/enabled=True,k8s.io/cluster-autoscaler/k8s.prod.bh7cw.me=True,service=k8s_node"
   when: az.availability_zones | length | int >= 3
     
 - name: Create cluster when az < 3
@@ -36,7 +37,8 @@
       --networking cilium \
       --topology=private \
       --bastion=true \
-      --ssh-public-key="{{ ssh_public_key }}"
+      --ssh-public-key="{{ ssh_public_key }}" \
+      --cloud-labels "k8s.io/cluster-autoscaler/enabled=True,k8s.io/cluster-autoscaler/k8s.prod.bh7cw.me=True,service=k8s_node"
   when: az.availability_zones | length | int < 3
 
 - name: Config cluster
@@ -49,7 +51,38 @@
   shell: kops update cluster --name "{{ k8s_domain_name }}" --state s3://"{{ k8s_domain_name }}" --yes --admin
 
 - name: Validate cluster
-  shell: kops validate cluster --name ${NAME} --state s3://"{{ k8s_domain_name }}" --wait 12m
+  shell: kops validate cluster --name ${NAME} --state s3://"{{ k8s_domain_name }}" --wait 15m
 
-- name: Install metrics-server to cluster
-  shell: kubectl apply -f metrics-server/metrics-server.yml
+- name: Install Cluster Autoscaler
+  shell: kubectl apply -f cluster-autoscaler/cluster-autoscaler.yml
+
+- name: Update Cluster configuration to enable autoscaling
+  shell: |
+    kops get cluster -oyaml > cluster-autoscaler/cluster.yml
+    sed -i '' -e 's/spec:/spec:\n  additionalPolicies:\n    node: |\n      [\n        {\n          "Effect": "Allow",\n          "Action": [\n            "autoscaling:DescribeAutoScalingGroups",\n            "autoscaling:DescribeAutoScalingInstances",\n            "autoscaling:DescribeLaunchConfigurations",\n            "autoscaling:SetDesiredCapacity",\n            "autoscaling:TerminateInstanceInAutoScalingGroup",\n            "autoscaling:DescribeTags"\n          ],\n          "Resource": "*"\n        }\n      ]/' cluster-autoscaler/cluster.yml
+    kops replace -f cluster-autoscaler/cluster.yml
+
+- name: Update Instance Groups configuration, set node count MIN to 3 and MAX to 6
+  shell: |
+    kops get ig nodes-us-east-1a -oyaml > cluster-autoscaler/nodes-us-east-1a.yml
+    sed -i '' -e 's/maxSize: 1/maxSize: 2/' cluster-autoscaler/nodes-us-east-1a.yml
+    sed -i '' -e 's/spec:/spec:\n  cloudLabels:\n    service: k8s_node\n    k8s.io\/cluster-autoscaler\/enabled: ""\n    k8s.io\/cluster-autoscaler\/k8s.prod.bh7cw.me: ""/' cluster-autoscaler/nodes-us-east-1a.yml
+    kops replace -f cluster-autoscaler/nodes-us-east-1a.yml
+
+    kops get ig nodes-us-east-1b -oyaml > cluster-autoscaler/nodes-us-east-1b.yml
+    sed -i '' -e 's/maxSize: 1/maxSize: 2/' cluster-autoscaler/nodes-us-east-1b.yml
+    sed -i '' -e 's/spec:/spec:\n  cloudLabels:\n    service: k8s_node\n    k8s.io\/cluster-autoscaler\/enabled: ""\n    k8s.io\/cluster-autoscaler\/k8s.prod.bh7cw.me: ""/' cluster-autoscaler/nodes-us-east-1b.yml
+    kops replace -f cluster-autoscaler/nodes-us-east-1b.yml
+    
+    kops get ig nodes-us-east-1c -oyaml > cluster-autoscaler/nodes-us-east-1c.yml
+    sed -i '' -e 's/maxSize: 1/maxSize: 2/' cluster-autoscaler/nodes-us-east-1c.yml
+    sed -i '' -e 's/spec:/spec:\n  cloudLabels:\n    service: k8s_node\n    k8s.io\/cluster-autoscaler\/enabled: ""\n    k8s.io\/cluster-autoscaler\/k8s.prod.bh7cw.me: ""/' cluster-autoscaler/nodes-us-east-1c.yml
+    kops replace -f cluster-autoscaler/nodes-us-east-1c.yml
+
+- name: Update the cluster
+  shell: |
+    kops update cluster --name ${NAME} --yes --admin
+    kops rolling-update cluster --yes
+
+- name: Clean up
+  shell: rm -rf cluster-autoscaler/cluster.yml cluster-autoscaler/nodes-*
