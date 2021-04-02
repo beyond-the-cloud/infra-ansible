@@ -1,4 +1,4 @@
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: webapp-ingress
@@ -11,43 +11,42 @@ spec:
   - host: k8s.prod.bh7cw.me
     http:
       paths:
-      - backend:
-          serviceName: webapp-deployment-svc
-          servicePort: 8080
-        path: /
-  - host: best.processor.k8s.prod.bh7cw.me
-    http:
-      paths:
-      - backend:
-          serviceName: processor-webapp-best-deployment-svc
-          servicePort: 80
-        path: /
-  - host: new.processor.k8s.prod.bh7cw.me
-    http:
-      paths:
-      - backend:
-          serviceName: processor-webapp-new-deployment-svc
-          servicePort: 80
-        path: /
-  - host: top.processor.k8s.prod.bh7cw.me
-    http:
-      paths:
-      - backend:
-          serviceName: processor-webapp-top-deployment-svc
-          servicePort: 80
-        path: /
-  - host: notifier.k8s.prod.bh7cw.me
-    http:
-      paths:
-      - backend:
-          serviceName: notifier-webapp-deployment-svc
-          servicePort: 80
-        path: /
+      - path: /webapp
+        pathType: Prefix
+        backend:
+          service:
+            name: webapp-deployment-svc
+            port:
+              number: 8080
+      - path: /best
+        pathType: Prefix
+        backend:
+          service:
+            name: processor-webapp-best-deployment-svc
+            port:
+              number: 80
+      - path: /new
+        pathType: Prefix
+        backend:
+          service:
+            name: processor-webapp-new-deployment-svc
+            port:
+              number: 80
+      - path: /top
+        pathType: Prefix
+        backend:
+          service:
+            name: processor-webapp-top-deployment-svc
+            port:
+              number: 80
+      - path: /notifier
+        pathType: Prefix
+        backend:
+          service:
+            name: notifier-webapp-deployment-svc
+            port:
+              number: 80
   tls:
   - secretName: webapp-tls-cert
     hosts:
       - k8s.prod.bh7cw.me
-      - best.processor.k8s.prod.bh7cw.me
-      - new.processor.k8s.prod.bh7cw.me
-      - top.processor.k8s.prod.bh7cw.me
-      - notifier.k8s.prod.bh7cw.me
