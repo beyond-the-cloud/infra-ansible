@@ -1,4 +1,4 @@
 ---
 - name: Delete NGINX Ingress Controller
   shell: |
-    helm uninstall nginx-ingress
+    helm uninstall ingress
