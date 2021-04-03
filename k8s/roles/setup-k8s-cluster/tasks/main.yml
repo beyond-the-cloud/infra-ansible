@@ -59,7 +59,7 @@
 - name: Update Cluster configuration to enable autoscaling
   shell: |
     kops get cluster -oyaml > cluster-autoscaler/cluster.yml
-    sed -i '' -e 's/spec:/spec:\n  additionalPolicies:\n    node: |\n      [\n        {\n          "Effect": "Allow",\n          "Action": [\n            "autoscaling:DescribeAutoScalingGroups",\n            "autoscaling:DescribeAutoScalingInstances",\n            "autoscaling:DescribeLaunchConfigurations",\n            "autoscaling:SetDesiredCapacity",\n            "autoscaling:TerminateInstanceInAutoScalingGroup",\n            "autoscaling:DescribeTags"\n          ],\n          "Resource": "*"\n        }\n      ]/' cluster-autoscaler/cluster.yml
+    sed -i '' -e 's/spec:/spec:\n  additionalPolicies:\n    node: |\n      [\n        {\n          "Effect": "Allow",\n          "Action": [\n            "autoscaling:DescribeAutoScalingGroups",\n            "autoscaling:DescribeAutoScalingInstances",\n            "autoscaling:DescribeLaunchConfigurations",\n            "autoscaling:SetDesiredCapacity",\n            "autoscaling:TerminateInstanceInAutoScalingGroup",\n            "ec2:DescribeLaunchTemplateVersions",\n            "autoscaling:DescribeTags"\n          ],\n          "Resource": "*"\n        }\n      ]/' cluster-autoscaler/cluster.yml
     kops replace -f cluster-autoscaler/cluster.yml
 
 - name: Update Instance Groups configuration, set node count MIN to 3 and MAX to 6

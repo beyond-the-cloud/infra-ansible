@@ -3,4 +3,6 @@
   shell: kubectl create ns monitoring
 
 - name: Install monitoring stack
-  shell: helm install prometheus /Users/bboysticker/Development/CSYE7125/helm-chart-metrics/metrics
+  shell: |
+    helm dependency update /Users/martin/go/src/acc/helm-chart-metrics/metrics
+    helm install prometheus /Users/martin/go/src/acc/helm-chart-metrics/metrics
