@@ -2,4 +2,4 @@
 - name: Set up elasticsearch cluster
   shell: |
     helm repo add elastic https://helm.elastic.co
-    helm install -f elasticsearch/values.yaml elasticsearch elastic/elasticsearch --wait
+    helm install elasticsearch elastic/elasticsearch
